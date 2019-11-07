@@ -7,13 +7,22 @@ import com.fasterxml.jackson.databind.*;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.LoggingFilter;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
 import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.multipart.FormDataMultiPart;
 
 import br.com.onsys.api.client.auth.ApiKeyAuth;
 import br.com.onsys.api.client.auth.Authentication;
 import br.com.onsys.api.client.auth.HttpBasicAuth;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.Response.Status.Family;
 
 import java.util.Collection;
@@ -26,7 +35,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import java.net.URLEncoder;
-
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -321,130 +332,137 @@ public class ApiClient {
     }
   }
 
+  
+  
   /**
-   * Invoke API by sending HTTP request with the given options.
-   *
-   * @param path The sub-path of the HTTP URL
-   * @param method The request method, one of "GET", "POST", "PUT", and "DELETE"
-   * @param queryParams The query parameters
-   * @param body The request body object
-   * @param headerParams The header parameters
-   * @param formParams The form parameters
-   * @param accept The request's Accept header
-   * @param contentType The request's Content-Type header
-   * @param authNames The authentications to apply
-   * @return The response body in type of string
-   */
-  public String invokeAPI(String path, String method, Map<String, String> queryParams, Object body, Map<String, String> headerParams, Map<String, String> formParams, String accept, String contentType, String[] authNames) throws ApiException {
-    updateParamsForAuth(authNames, queryParams, headerParams);
+  * Invoke API by sending HTTP request with the given options.
+  *
+  * @param path The sub-path of the HTTP URL
+  * @param method The request method, one of "GET", "POST", "PUT", and "DELETE"
+  * @param queryParams The query parameters
+  * @param body The request body object
+  * @param headerParams The header parameters
+  * @param formParams The form parameters
+  * @param accept The request's Accept header
+  * @param contentType The request's Content-Type header
+  * @param authNames The authentications to apply
+  * @return The response body in type of string
+  */
+ public String invokeAPI(String path, String method, Map<String, String> queryParams, Object body, Map<String, String> headerParams, Map<String, String> formParams, String accept, String contentType, String[] authNames) throws ApiException {
+   
+   System.setProperty("jsse.enableSNIExtension", "false");
+	 
+   updateParamsForAuth(authNames, queryParams, headerParams);
 
-    Client client = getClient();
+   Client client = getClient();
 
-    StringBuilder b = new StringBuilder();
-    for(String key : queryParams.keySet()) {
-      String value = queryParams.get(key);
-      if (value != null){
-        if(b.toString().length() == 0)
-          b.append("?");
-        else
-          b.append("&");
-        b.append(escapeString(key)).append("=").append(escapeString(value));
-      }
-    }
-    String querystring = b.toString();
+   StringBuilder b = new StringBuilder();
+   for(String key : queryParams.keySet()) {
+     String value = queryParams.get(key);
+     if (value != null){
+       if(b.toString().length() == 0)
+         b.append("?");
+       else
+         b.append("&");
+       b.append(escapeString(key)).append("=").append(escapeString(value));
+     }
+   }
+   String querystring = b.toString();
 
-    Builder builder;
-    if (accept == null)
-      builder = client.resource(basePath + path + querystring).getRequestBuilder();
-    else
-      builder = client.resource(basePath + path + querystring).accept(accept);
+   Builder builder;
+   if (accept == null)
+     builder = client.resource(basePath + path + querystring).getRequestBuilder();
+   else
+     builder = client.resource(basePath + path + querystring).accept(accept);
 
-    for(String key : headerParams.keySet()) {
-      builder = builder.header(key, headerParams.get(key));
-    }
-    for(String key : defaultHeaderMap.keySet()) {
-      if(!headerParams.containsKey(key)) {
-        builder = builder.header(key, defaultHeaderMap.get(key));
-      }
-    }
+   for(String key : headerParams.keySet()) {
+     builder = builder.header(key, headerParams.get(key));
+   }
+   for(String key : defaultHeaderMap.keySet()) {
+     if(!headerParams.containsKey(key)) {
+       builder = builder.header(key, defaultHeaderMap.get(key));
+     }
+   }
 
-    ClientResponse response = null;
+   ClientResponse response = null;
 
-    if("GET".equals(method)) {
-      response = (ClientResponse) builder.get(ClientResponse.class);
-    }
-    else if ("POST".equals(method)) {
-      if (contentType.startsWith("application/x-www-form-urlencoded")) {
-        String encodedFormParams = this
-            .getXWWWFormUrlencodedParams(formParams);
-        response = builder.type(contentType).post(ClientResponse.class,
-            encodedFormParams);
-      } else if (body == null) {
-        response = builder.post(ClientResponse.class, null);
-      } else if(body instanceof FormDataMultiPart) {
-        response = builder.type(contentType).post(ClientResponse.class, body);
-      }
-      else
-        response = builder.type(contentType).post(ClientResponse.class, serialize(body));
-    }
-    else if ("PUT".equals(method)) {
-      if ("application/x-www-form-urlencoded".equals(contentType)) {
-          String encodedFormParams = this
-              .getXWWWFormUrlencodedParams(formParams);
-          response = builder.type(contentType).put(ClientResponse.class,
-              encodedFormParams);
-      } else if(body == null) {
-        response = builder.put(ClientResponse.class, serialize(body));
-      } else {
-          response = builder.type(contentType).put(ClientResponse.class, serialize(body));
-      }
-    }
-    else if ("DELETE".equals(method)) {
-      if ("application/x-www-form-urlencoded".equals(contentType)) {
-        String encodedFormParams = this
-            .getXWWWFormUrlencodedParams(formParams);
-        response = builder.type(contentType).delete(ClientResponse.class,
-            encodedFormParams);
-      } else if(body == null) {
-        response = builder.delete(ClientResponse.class);
-      } else {
-        response = builder.type(contentType).delete(ClientResponse.class, serialize(body));
-      }
-    }
-    else {
-      throw new ApiException(500, "unknown method type " + method);
-    }
+   if("GET".equals(method)) {
+     response = (ClientResponse) builder.get(ClientResponse.class);
+   }
+   else if ("POST".equals(method)) {
+     if (contentType.startsWith("application/x-www-form-urlencoded")) {
+       String encodedFormParams = this
+           .getXWWWFormUrlencodedParams(formParams);
+       response = builder.type(contentType).post(ClientResponse.class,
+           encodedFormParams);
+     } else if (body == null) {
+       response = builder.post(ClientResponse.class, null);
+     } else if(body instanceof FormDataMultiPart) {
+       response = builder.type(contentType).post(ClientResponse.class, body);
+     }
+     else
+       response = builder.type(contentType).post(ClientResponse.class, serialize(body));
+   }
+   else if ("PUT".equals(method)) {
+     if ("application/x-www-form-urlencoded".equals(contentType)) {
+         String encodedFormParams = this
+             .getXWWWFormUrlencodedParams(formParams);
+         response = builder.type(contentType).put(ClientResponse.class,
+             encodedFormParams);
+     } else if(body == null) {
+       response = builder.put(ClientResponse.class, serialize(body));
+     } else {
+         response = builder.type(contentType).put(ClientResponse.class, serialize(body));
+     }
+   }
+   else if ("DELETE".equals(method)) {
+     if ("application/x-www-form-urlencoded".equals(contentType)) {
+       String encodedFormParams = this
+           .getXWWWFormUrlencodedParams(formParams);
+       response = builder.type(contentType).delete(ClientResponse.class,
+           encodedFormParams);
+     } else if(body == null) {
+       response = builder.delete(ClientResponse.class);
+     } else {
+       response = builder.type(contentType).delete(ClientResponse.class, serialize(body));
+     }
+   }
+   else {
+     throw new ApiException(500, "unknown method type " + method);
+   }
 
-    if(ClientResponse.Status.fromStatusCode(response.getStatus()) == ClientResponse.Status.NO_CONTENT) {
-      return null;
-    }
-    else if(ClientResponse.Status.getFamilyByStatusCode(response.getStatus()) == Family.SUCCESSFUL) {
-      if(response.hasEntity()) {
-        return (String) response.getEntity(String.class);
-      }
-      else {
-        return "";
-      }
-    }
-    else {
-      String message = "error";
-      String respBody = null;
-      if(response.hasEntity()) {
-        try{
-          respBody = String.valueOf(response.getEntity(String.class));
-          message = respBody;
-        }
-        catch (RuntimeException e) {
-          // e.printStackTrace();
-        }
-      }
-      throw new ApiException(
-                response.getStatus(),
-                message,
-                response.getHeaders(),
-                respBody);
-    }
-  }
+   if(ClientResponse.Status.fromStatusCode(response.getStatus()) == ClientResponse.Status.NO_CONTENT) {
+     return null;
+   }
+   else if(ClientResponse.Status.getFamilyByStatusCode(response.getStatus()) == Family.SUCCESSFUL) {
+     if(response.hasEntity()) {
+       return (String) response.getEntity(String.class);
+     }
+     else {
+       return "";
+     }
+   }
+   else {
+     String message = "error";
+     String respBody = null;
+     if(response.hasEntity()) {
+       try{
+         respBody = String.valueOf(response.getEntity(String.class));
+         message = respBody;
+       }
+       catch (RuntimeException e) {
+         // e.printStackTrace();
+       }
+     }
+     throw new ApiException(
+               response.getStatus(),
+               message,
+               response.getHeaders(),
+               respBody);
+   }
+ }
+  
+  
 
   /**
    * Update query and header parameters based on authentication settings.
@@ -492,6 +510,19 @@ public class ApiClient {
   private Client getClient() {
     if(!hostMap.containsKey(basePath)) {
       Client client = Client.create();
+      if (debugging)
+        client.addFilter(new LoggingFilter());
+      hostMap.put(basePath, client);
+    }
+    return hostMap.get(basePath);
+  }
+  
+  /**
+   * Get an existing client or create a new client to handle HTTP request.
+   */
+  private Client getClient(ClientConfig config) {
+    if(!hostMap.containsKey(basePath)) {
+      Client client = Client.create(config);
       if (debugging)
         client.addFilter(new LoggingFilter());
       hostMap.put(basePath, client);

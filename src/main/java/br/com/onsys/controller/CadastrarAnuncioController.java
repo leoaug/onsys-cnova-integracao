@@ -28,12 +28,10 @@ import br.com.onsys.api.client.auth.ApiKeyAuth;
 
 @Named
 @Scope("view")
-public class CadastrarAnuncioController implements Serializable {
+public class CadastrarAnuncioController extends OnsysCnovaController implements Serializable {
 
 	
 	private static final long serialVersionUID = 1L;
-	private ApiClient apiClient = ApiUtil.callApi();
-	private LoadsApi loadsApi = new LoadsApi(apiClient);
 
 	@PostConstruct
 	public void onInit() {
@@ -95,11 +93,11 @@ public class CadastrarAnuncioController implements Serializable {
 			// Envia a carga de produtos
 			try {
 
-			    loadsApi.postProducts(products);
+			    getLoadsApi().postProducts(products);
 
 			} catch (ApiException e) {
 
-			    Errors errors = CnovaException.deserializeErrors(e.getMessage(), apiClient);
+			    Errors errors = CnovaException.deserializeErrors(e.getMessage(), getApiClient());
 
 			    if (errors == null) {
 			        System.err.print("Error calling LOADS resource.");

@@ -23,22 +23,20 @@ import br.com.onsys.util.CnovaException;
 
 @Named
 @Scope("view")
-public class ManterAnuncioController implements Serializable {
+public class ManterAnuncioController extends OnsysCnovaController implements Serializable {
 
 	
 	private static final long serialVersionUID = 1L;
 
-	private ApiClient apiClient = ApiUtil.callApi();
-	private LoadsApi loadsApi = new LoadsApi(apiClient);
 	
 	@PostConstruct
 	public void onInit() {
 		
+		super.onInit();
 		
-
 		try {
 
-		    GetProductsResponse getProductsResponse = loadsApi.getProducts(null, null, 0, 10);
+		    GetProductsResponse getProductsResponse = getLoadsApi().getProducts(null, null, 0, 10);
 		    for(MetadataEntry metadataEntry : getProductsResponse.getMetadata()) {
 		    	 System.out.println(metadataEntry.getKey() + metadataEntry.getValue());
 		    }
@@ -46,15 +44,7 @@ public class ManterAnuncioController implements Serializable {
 
 		} catch (ApiException e) {
 
-		    Errors errors = CnovaException.deserializeErrors(e.getMessage(), apiClient);
-
-		    if (errors == null) {
-		        System.err.println("Error calling LOADS resource." + e);
-		    } else {
-		        // TODO: Manage Errors structure.
-		        System.out.println(errors);
-		    }
-
+		   e.printStackTrace();
 		}
 	}
 	
@@ -63,7 +53,7 @@ public class ManterAnuncioController implements Serializable {
 		
 			Product product = (Product) event.getObject();
 			
-			loadsApi.putProduct(product.getSkuSellerId(),product);
+			getLoadsApi().putProduct(product.getSkuSellerId(),product);
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "Anúncio Alterado no Cnova"));
 		} catch (Exception e) {
@@ -73,4 +63,7 @@ public class ManterAnuncioController implements Serializable {
 			throw e;
 		}
 	}
+
+	
+	
 }
