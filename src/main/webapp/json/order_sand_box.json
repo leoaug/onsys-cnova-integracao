@@ -1,0 +1,36 @@
+{
+  "site": "EX",
+  "items": [
+    {
+      "skuSellerId": "0000005213085",
+      "name": "0000005213085",
+      "salePrice": 19.00,
+      "quantity": 1
+    }
+  ],
+  "customer": {
+    "name": "Gustavo Rubin",
+    "gender": "Male",
+    "documentNumber": "12345678",
+    "type": "PF",
+    "email": "gustavo@gustavo.com",
+    "bornAt": "1983-07-07",
+    "billing": {
+      "address": "Rua xyz",
+      "number": "231",
+      "complement": "casa",
+      "quarter": "1",
+      "reference": "lala",
+      "city": "Sao Paulo",
+      "state": "SP",
+      "countryId": "BR",
+      "zipCode": "13022234",
+      "recipientName": "Maria"
+    },
+    "phones": {
+      "mobile": "11202039283",
+      "home": "11092308934",
+      "office": "1128373823"
+    }
+  }
+}

@@ -31,7 +31,7 @@ public class CategoryAttribute  {
   /**
    * Lista de domínios para atributos variantes
    **/
-  @ApiModelProperty(required = true, value = "Lista de domínios para atributos variantes")
+  @ApiModelProperty(required = true, value = "Lista de dom�nios para atributos variantes")
   @JsonProperty("values")
   public List<String> getValues() {
     return values;

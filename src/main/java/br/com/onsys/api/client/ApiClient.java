@@ -349,9 +349,7 @@ public class ApiClient {
   * @return The response body in type of string
   */
  public String invokeAPI(String path, String method, Map<String, String> queryParams, Object body, Map<String, String> headerParams, Map<String, String> formParams, String accept, String contentType, String[] authNames) throws ApiException {
-   
-   System.setProperty("jsse.enableSNIExtension", "false");
-	 
+   	 
    updateParamsForAuth(authNames, queryParams, headerParams);
 
    Client client = getClient();

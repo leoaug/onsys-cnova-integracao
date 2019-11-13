@@ -410,6 +410,121 @@ public class LoadsApi {
     }
   }
   
+  
+  
+  public String geCode (String path) throws ApiException {
+	    Object postBody = null;
+	    
+	   
+
+	    // query params
+	    Map<String, String> queryParams = new HashMap<String, String>();
+	    Map<String, String> headerParams = new HashMap<String, String>();
+	    Map<String, String> formParams = new HashMap<String, String>();
+
+	   
+	    
+
+	    
+
+	    final String[] accepts = {
+	      "application/json; charset=utf-8"
+	    };
+	    final String accept = apiClient.selectHeaderAccept(accepts);
+
+	    final String[] contentTypes = {
+	      
+	    };
+	    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+	    if(contentType.startsWith("multipart/form-data")) {
+	      boolean hasFields = false;
+	      FormDataMultiPart mp = new FormDataMultiPart();
+	      
+	      if(hasFields)
+	        postBody = mp;
+	    }
+	    else {
+	      
+	    }
+
+	    try {
+	      String[] authNames = new String[] { "client_id", "access_token" };
+	      String response = apiClient.invokeAPI(path, "GET", queryParams, postBody, headerParams, formParams, accept, contentType, authNames);
+	      if(response != null){
+	        return response;
+	      }
+	      else {
+	        return null;
+	      }
+	    } catch (ApiException ex) {
+	      throw ex;
+	    }
+	  }
+  
+  
+  /**
+   * Operação utilizada para enviar uma nova carga de produtos (assíncrono)
+   * &lt;p class=&#39;obs obs-danger&#39;&gt;Não é possível executar testes com esta operação via API Browser devido ao envio de arquivos, não suportado pela ferramenta.&lt;/p&gt;&lt;p&gt;Operação utilizada para envio de carga contendo novos produtos. Através desta é possível passar, de forma não obrigatória, informações da ficha dos produtos e informações de venda, tais como valor e quantidade.&lt;/p&gt;&lt;p class=&#39;obs&#39;&gt;Não é objetivo deste serviço o recebimento de informações para atualização de preço e estoque (para isso utilize os serviços existentes no recurso &lt;a href=&#39;#!/sellerItems&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;/sellerItems&lt;/strong&gt;&lt;/a&gt;), nem a atualização da ficha cadastral do produto (não há serviço disponível para essa finalidade, se precisar atualizar a ficha do produto, entre em contato com o time Comercial do Marketplace).&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;IMPORTANTE&lt;/strong&gt;&lt;br/&gt;Caso sua Loja já tenha produtos no Marketplace que não foram enviados através da API (enviados via planilha excel, por exemplo), não os envie novamente em uma nova carga, faça primeiro a consulta de seus produtos através do serviço &lt;a href=&#39;#!/sellerItems/getSellerItems_get_0&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;GET /sellerItems&lt;/strong&gt;&lt;/a&gt; e realize o DE-PARA de skus.&lt;/p&gt;&lt;p class=&#39;obs obs-danger&#39;&gt; Devido ao formato JSON, é necessário alterar o &lt;strong&gt;HTTP Header: content-type&lt;/strong&gt; para &lt;strong&gt;application/json&lt;/strong&gt; para o correto funcionamento.&lt;br /&gt; &lt;br /&gt;Clique &lt;a href=&#39;../tutoriais/exemplo_loads_v2.json&#39; target=&#39;_blank&#39;&gt;aqui&lt;/a&gt; para obter um exemplo de conteúdo JSON suportado por essa operação.&lt;/p&gt;&lt;p class=&#39;obs&#39;&gt; &lt;strong&gt;Categorias e atributos&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt; &lt;strong&gt;SANDBOX&lt;/strong&gt;&lt;br /&gt;&lt;br/&gt;Para os testes na SANDBOX é obrigatório passar uma categoria fixa chamada &lt;strong&gt;&#39;Teste&gt;API&#39;&lt;/strong&gt;. Caso seja enviada qualquer outra categoria, o produto ficará no status &lt;strong&gt;Pending&lt;/strong&gt; e, em Sandbox, não há tratamento para esse tipo de status. Se isso acontecer, cancele o seu produto com a operação exlusiva de Sandbox &lt;a href=&#39;#!/loads/deleteProducts_delete_2&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;DELETE /loads/products/{skuSellerId}&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;&lt;br /&gt; &lt;strong&gt;PRODUÇÃO&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;Em produção, envie a categoria real do produto do lojista, não é necessário fazer o DE-PARA para a árvore de categorias do Marketplace.&lt;br /&gt; Lembre-se apenas de seguir a seguinte regra:&lt;br /&gt; &lt;strong&gt;&#39;Informática&gt;Notebook&#39;&lt;/strong&gt;, onde Informática é a categoria pai e Notebook é a subcategoria e elas devem ser separadas pelo sinal de maior &lt;strong&gt;&#39;&gt;&#39;&lt;/strong&gt;.&lt;br /&gt;Cada categoria da árvore de produtos da Cnova possui um conjunto de atributos opcionais e obrigatórios. Para saber quais são os atributos obrigatórios para a categoria de produtos que serão carregados, por favor consulte o seu contato comercial ou abra uma solicitação através de &lt;a href=&#39;http://suporte-lojistas.extra.com.br&#39;&gt;Suporte-lojistas.&lt;/a&gt; É sempre recomendável o envio do máximo de atributos disponíveis na base de origem para maximizar a qualidade das fichas de produto e os resultados de busca do produto.&lt;br/&gt; &lt;/p&gt;&lt;p class=&#39;obs obs-danger&#39;&gt; &lt;strong&gt;Sobre o processo de importação&lt;/strong&gt; &lt;br /&gt;&lt;br/&gt;Esta operação é assíncrona, ou seja, os produtos passam por um processamento em nosso sistema para depois ficarem disponíveis para consulta. Para consultar o status dos produtos enviados, utilize o serviço:&lt;br/&gt;&lt;a href=&#39;#!/loads/getLoadInfo_get_1&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;GET /loads/products&lt;/strong&gt;&lt;/a&gt;.&lt;br/&gt;Caso existam erros, também é possível verificar quais foram os erros para cada produto enviado através do serviço:&lt;br/&gt;&lt;a href=&#39;#!/loads/getLoadInfoSkuOrigin_get_3&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;GET /loads/products/{skuSellerId}&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt; Todos os produtos passam por um processo de aprovação antes da efetiva liberação no Marketplace. Atente-se para o processo de importação de produtos, que é diferente para cada ambiente:&lt;br /&gt;&lt;br/&gt; &lt;strong&gt;SANDBOX&lt;/strong&gt;&lt;br /&gt;&lt;br/&gt; Em Sandbox o processo de aprovação é automático, ou seja, uma vez que as cargas forem enviadas, se os produtos estiverem com a ficha cadastral correta, todos eles serão aprovados (assumirão o status Disponível - AVAILABLE).&lt;br /&gt;Os produtos que forem aprovados automaticamente só estarão disponíveis na consulta de produtos do lojista (&lt;a href=&#39;#!/sellerItems/getSellerItems_get_0&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;GET /sellerItems&lt;/strong&gt;&lt;/a&gt;) após assumirem o status &lt;strong&gt;AVAILABLE.&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt; &lt;strong&gt;PRODUÇÃO&lt;/strong&gt;&lt;br /&gt;&lt;br/&gt;Em Produção, antes que os produtos de uma carga sejam efetivamente cadastrados, eles passam por uma validação que fica sob a responsabilidade da Equipe de Cadastro do Marketplace e, por esse motivo, os produtos levam mais tempo para serem ativados no site ao qual você está apto a vender. Isso quer dizer que o produto não irá aparecer no site e nem estará disponível para atualizações de preço/estoque logo que enviado via carga. Consulte a equipe Comercial do Marketplace para informações sobre o prazo médio de cadastro dos produtos.&lt;/p&gt;&lt;p class=&#39;obs obs-danger&#39;&gt;&lt;strong&gt;Agrupamento de cargas&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;Quando uma carga de produtos é enviada, caso, antes da aprovação dos produtos enviado, uma segunda carga seja enviada, e se um produto for enviado nas duas cargas, o que irá valer é o segundo produto enviado, ou seja, se na primeira carga você constatou que o produto estava com algum erro, é possível reenviá-lo com as correções para que ele seja considerado para importação.&lt;br/&gt;Enquanto o novo produto não for aprovado, é possível enviá-lo novamente para atualização da fichal cadastral. &lt;strong&gt;Mas lembre-se:&lt;/strong&gt; para produtos já disponibilizados no Marketplace, esse serviço não realiza atualização da ficha cadastral, conforme mencionado acima.&lt;br/&gt;Outra forma de fazer essa correção unitária de um produto com problema é através do serviço &lt;a href=&#39;#!/loads/getLoadInfoSkuOrigin_put_4&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;PUT /loads/products/{skuSellerId}&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;&lt;p class=&#39;obs&#39;&gt;&lt;strong&gt;Retorno do Serviço&lt;/strong&gt;&lt;br /&gt;O retorno deste serviço é baseado no padrão definido para métodos POST segundo o Status HTTP 201 - Created.&lt;/p&gt;
+   * @param products Arquivo em formato &lt;strong&gt;JSON&lt;/strong&gt; cujo conteúdo contêm uma lista de objetos product.
+   * @return String
+   */
+  public String postProducts (byte[] gzipProducts) throws ApiException {
+    Object postBody = gzipProducts;
+    
+    // verify the required parameter 'products' is set
+    if (gzipProducts == null) {
+       throw new ApiException(400, "Missing the required parameter 'products' when calling postProducts");
+    }
+    
+
+    // create path and map variables
+    String path = "/loads/products".replaceAll("\\{format\\}","json");
+
+    // query params
+    Map<String, String> queryParams = new HashMap<String, String>();
+    Map<String, String> headerParams = new HashMap<String, String>();
+    Map<String, String> formParams = new HashMap<String, String>();
+
+    
+
+    
+
+    final String[] accepts = {
+      
+    };
+    final String accept = apiClient.selectHeaderAccept(accepts);
+
+    final String[] contentTypes = {
+      "application/gzip"
+    };
+    final String contentType = apiClient.selectHeaderContentType(contentTypes);
+
+    if(contentType.startsWith("multipart/form-data")) {
+      boolean hasFields = false;
+      FormDataMultiPart mp = new FormDataMultiPart();
+      
+      if(hasFields)
+        postBody = mp;
+    }
+    else {
+      
+    }
+
+    try {
+      String[] authNames = new String[] { "client_id", "access_token" };
+      String response = apiClient.invokeAPI(path, "POST", queryParams, postBody, headerParams, formParams, accept, contentType, authNames);
+      if(response != null){
+        return (String) apiClient.deserialize(response, "", String.class);
+      }
+      else {
+        return null;
+      }
+    } catch (ApiException ex) {
+      throw ex;
+    }
+  }
+  
   /**
    * Operação utilizada para enviar uma nova carga de produtos (assíncrono)
    * &lt;p class=&#39;obs obs-danger&#39;&gt;Não é possível executar testes com esta operação via API Browser devido ao envio de arquivos, não suportado pela ferramenta.&lt;/p&gt;&lt;p&gt;Operação utilizada para envio de carga contendo novos produtos. Através desta é possível passar, de forma não obrigatória, informações da ficha dos produtos e informações de venda, tais como valor e quantidade.&lt;/p&gt;&lt;p class=&#39;obs&#39;&gt;Não é objetivo deste serviço o recebimento de informações para atualização de preço e estoque (para isso utilize os serviços existentes no recurso &lt;a href=&#39;#!/sellerItems&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;/sellerItems&lt;/strong&gt;&lt;/a&gt;), nem a atualização da ficha cadastral do produto (não há serviço disponível para essa finalidade, se precisar atualizar a ficha do produto, entre em contato com o time Comercial do Marketplace).&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;IMPORTANTE&lt;/strong&gt;&lt;br/&gt;Caso sua Loja já tenha produtos no Marketplace que não foram enviados através da API (enviados via planilha excel, por exemplo), não os envie novamente em uma nova carga, faça primeiro a consulta de seus produtos através do serviço &lt;a href=&#39;#!/sellerItems/getSellerItems_get_0&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;GET /sellerItems&lt;/strong&gt;&lt;/a&gt; e realize o DE-PARA de skus.&lt;/p&gt;&lt;p class=&#39;obs obs-danger&#39;&gt; Devido ao formato JSON, é necessário alterar o &lt;strong&gt;HTTP Header: content-type&lt;/strong&gt; para &lt;strong&gt;application/json&lt;/strong&gt; para o correto funcionamento.&lt;br /&gt; &lt;br /&gt;Clique &lt;a href=&#39;../tutoriais/exemplo_loads_v2.json&#39; target=&#39;_blank&#39;&gt;aqui&lt;/a&gt; para obter um exemplo de conteúdo JSON suportado por essa operação.&lt;/p&gt;&lt;p class=&#39;obs&#39;&gt; &lt;strong&gt;Categorias e atributos&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt; &lt;strong&gt;SANDBOX&lt;/strong&gt;&lt;br /&gt;&lt;br/&gt;Para os testes na SANDBOX é obrigatório passar uma categoria fixa chamada &lt;strong&gt;&#39;Teste&gt;API&#39;&lt;/strong&gt;. Caso seja enviada qualquer outra categoria, o produto ficará no status &lt;strong&gt;Pending&lt;/strong&gt; e, em Sandbox, não há tratamento para esse tipo de status. Se isso acontecer, cancele o seu produto com a operação exlusiva de Sandbox &lt;a href=&#39;#!/loads/deleteProducts_delete_2&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;DELETE /loads/products/{skuSellerId}&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt;&lt;br /&gt; &lt;strong&gt;PRODUÇÃO&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;Em produção, envie a categoria real do produto do lojista, não é necessário fazer o DE-PARA para a árvore de categorias do Marketplace.&lt;br /&gt; Lembre-se apenas de seguir a seguinte regra:&lt;br /&gt; &lt;strong&gt;&#39;Informática&gt;Notebook&#39;&lt;/strong&gt;, onde Informática é a categoria pai e Notebook é a subcategoria e elas devem ser separadas pelo sinal de maior &lt;strong&gt;&#39;&gt;&#39;&lt;/strong&gt;.&lt;br /&gt;Cada categoria da árvore de produtos da Cnova possui um conjunto de atributos opcionais e obrigatórios. Para saber quais são os atributos obrigatórios para a categoria de produtos que serão carregados, por favor consulte o seu contato comercial ou abra uma solicitação através de &lt;a href=&#39;http://suporte-lojistas.extra.com.br&#39;&gt;Suporte-lojistas.&lt;/a&gt; É sempre recomendável o envio do máximo de atributos disponíveis na base de origem para maximizar a qualidade das fichas de produto e os resultados de busca do produto.&lt;br/&gt; &lt;/p&gt;&lt;p class=&#39;obs obs-danger&#39;&gt; &lt;strong&gt;Sobre o processo de importação&lt;/strong&gt; &lt;br /&gt;&lt;br/&gt;Esta operação é assíncrona, ou seja, os produtos passam por um processamento em nosso sistema para depois ficarem disponíveis para consulta. Para consultar o status dos produtos enviados, utilize o serviço:&lt;br/&gt;&lt;a href=&#39;#!/loads/getLoadInfo_get_1&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;GET /loads/products&lt;/strong&gt;&lt;/a&gt;.&lt;br/&gt;Caso existam erros, também é possível verificar quais foram os erros para cada produto enviado através do serviço:&lt;br/&gt;&lt;a href=&#39;#!/loads/getLoadInfoSkuOrigin_get_3&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;GET /loads/products/{skuSellerId}&lt;/strong&gt;&lt;/a&gt;&lt;br /&gt; Todos os produtos passam por um processo de aprovação antes da efetiva liberação no Marketplace. Atente-se para o processo de importação de produtos, que é diferente para cada ambiente:&lt;br /&gt;&lt;br/&gt; &lt;strong&gt;SANDBOX&lt;/strong&gt;&lt;br /&gt;&lt;br/&gt; Em Sandbox o processo de aprovação é automático, ou seja, uma vez que as cargas forem enviadas, se os produtos estiverem com a ficha cadastral correta, todos eles serão aprovados (assumirão o status Disponível - AVAILABLE).&lt;br /&gt;Os produtos que forem aprovados automaticamente só estarão disponíveis na consulta de produtos do lojista (&lt;a href=&#39;#!/sellerItems/getSellerItems_get_0&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;GET /sellerItems&lt;/strong&gt;&lt;/a&gt;) após assumirem o status &lt;strong&gt;AVAILABLE.&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt; &lt;strong&gt;PRODUÇÃO&lt;/strong&gt;&lt;br /&gt;&lt;br/&gt;Em Produção, antes que os produtos de uma carga sejam efetivamente cadastrados, eles passam por uma validação que fica sob a responsabilidade da Equipe de Cadastro do Marketplace e, por esse motivo, os produtos levam mais tempo para serem ativados no site ao qual você está apto a vender. Isso quer dizer que o produto não irá aparecer no site e nem estará disponível para atualizações de preço/estoque logo que enviado via carga. Consulte a equipe Comercial do Marketplace para informações sobre o prazo médio de cadastro dos produtos.&lt;/p&gt;&lt;p class=&#39;obs obs-danger&#39;&gt;&lt;strong&gt;Agrupamento de cargas&lt;/strong&gt;&lt;br/&gt;&lt;br/&gt;Quando uma carga de produtos é enviada, caso, antes da aprovação dos produtos enviado, uma segunda carga seja enviada, e se um produto for enviado nas duas cargas, o que irá valer é o segundo produto enviado, ou seja, se na primeira carga você constatou que o produto estava com algum erro, é possível reenviá-lo com as correções para que ele seja considerado para importação.&lt;br/&gt;Enquanto o novo produto não for aprovado, é possível enviá-lo novamente para atualização da fichal cadastral. &lt;strong&gt;Mas lembre-se:&lt;/strong&gt; para produtos já disponibilizados no Marketplace, esse serviço não realiza atualização da ficha cadastral, conforme mencionado acima.&lt;br/&gt;Outra forma de fazer essa correção unitária de um produto com problema é através do serviço &lt;a href=&#39;#!/loads/getLoadInfoSkuOrigin_put_4&#39; target=&#39;_blank&#39;&gt;&lt;strong&gt;PUT /loads/products/{skuSellerId}&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;&lt;p class=&#39;obs&#39;&gt;&lt;strong&gt;Retorno do Serviço&lt;/strong&gt;&lt;br /&gt;O retorno deste serviço é baseado no padrão definido para métodos POST segundo o Status HTTP 201 - Created.&lt;/p&gt;

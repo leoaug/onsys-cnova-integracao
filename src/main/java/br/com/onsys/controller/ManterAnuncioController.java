@@ -18,6 +18,7 @@ import br.com.onsys.model.Errors;
 import br.com.onsys.model.GetProductsResponse;
 import br.com.onsys.model.MetadataEntry;
 import br.com.onsys.model.Product;
+import br.com.onsys.model.ProductResponseItem;
 import br.com.onsys.util.ApiUtil;
 import br.com.onsys.util.CnovaException;
 
@@ -37,6 +38,12 @@ public class ManterAnuncioController extends OnsysCnovaController implements Ser
 		try {
 
 		    GetProductsResponse getProductsResponse = getLoadsApi().getProducts(null, null, 0, 10);
+		    
+		    for(ProductResponseItem productResponseItem : getProductsResponse.getSkus()) {
+		    	System.out.println(productResponseItem.getSkuSeller().getId());
+		    	System.out.println(productResponseItem.getStatus());
+		    }
+		    
 		    for(MetadataEntry metadataEntry : getProductsResponse.getMetadata()) {
 		    	 System.out.println(metadataEntry.getKey() + metadataEntry.getValue());
 		    }

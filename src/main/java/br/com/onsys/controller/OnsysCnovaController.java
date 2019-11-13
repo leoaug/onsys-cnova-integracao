@@ -9,7 +9,9 @@ import org.springframework.context.annotation.Scope;
 
 import br.com.onsys.api.client.ApiClient;
 import br.com.onsys.api.client.ApiException;
+import br.com.onsys.api.service.CategoriesApi;
 import br.com.onsys.api.service.LoadsApi;
+import br.com.onsys.api.service.OrdersApi;
 import br.com.onsys.model.Errors;
 import br.com.onsys.util.ApiUtil;
 import br.com.onsys.util.CnovaException;
@@ -21,6 +23,8 @@ public class OnsysCnovaController implements Serializable {
 
 	private ApiClient apiClient;
 	private LoadsApi loadsApi;
+	private OrdersApi ordersApi;
+	private CategoriesApi categoriesApi;
 	private String titulo;
 	
 	private static final long serialVersionUID = 1L;
@@ -30,9 +34,11 @@ public class OnsysCnovaController implements Serializable {
 	public void onInit() {
 		
 			try {
-			
+						
 				apiClient = ApiUtil.callApi();
 				loadsApi = new LoadsApi(apiClient);
+				ordersApi = new OrdersApi(apiClient);
+				categoriesApi = new CategoriesApi(apiClient);
 				
 			} catch (ApiException e) {
 
@@ -59,6 +65,12 @@ public class OnsysCnovaController implements Serializable {
 	}
 	public LoadsApi getLoadsApi() {
 		return loadsApi;
+	}
+	public OrdersApi getOrdersApi() {
+		return ordersApi;
+	}
+	public CategoriesApi getCategoriesApi() {
+		return categoriesApi;
 	}
 	
 			
