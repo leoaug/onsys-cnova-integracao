@@ -187,7 +187,34 @@
 		    <groupId>javax.inject</groupId>
 		    <artifactId>javax.inject</artifactId>
 		    <version>1</version> 
-		</dependency> 
+		</dependency>
+		
+			<!-- https://mvnrepository.com/artifact/net.sf.dozer/dozer -->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.9-RC2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>annotations</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.jdal</groupId>
+			<artifactId>jdal-core</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		    <version>3.9</version>
+		</dependency>
+		
+		 
 		
 	</dependencies>
    

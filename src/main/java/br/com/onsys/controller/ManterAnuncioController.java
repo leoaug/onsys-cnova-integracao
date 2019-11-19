@@ -37,7 +37,12 @@ public class ManterAnuncioController extends OnsysCnovaController implements Ser
 		
 		try {
 
-		    GetProductsResponse getProductsResponse = getLoadsApi().getProducts(null, null, 0, 10);
+			String pending = "PENDING";
+			String available = "AVAILABLE";
+			String canceled = "CANCELED";
+			String error = "ERROR";
+			
+		    GetProductsResponse getProductsResponse = getLoadsApi().getProducts(null, pending, 0, 10);
 		    
 		    for(ProductResponseItem productResponseItem : getProductsResponse.getSkus()) {
 		    	System.out.println(productResponseItem.getSkuSeller().getId());

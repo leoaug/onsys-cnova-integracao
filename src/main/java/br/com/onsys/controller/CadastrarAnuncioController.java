@@ -32,7 +32,7 @@ import br.com.onsys.model.ProductLoadStock;
 import br.com.onsys.util.ApiUtil;
 import br.com.onsys.util.CnovaException;
 import br.com.onsys.util.GZIPCompression;
-import br.com.onsys.api.client.auth.ApiKeyAuth;
+import br.com.onsys.util.ObjetoUtil;
 
 @Named
 @Scope("view")
@@ -42,12 +42,23 @@ public class CadastrarAnuncioController extends OnsysCnovaController implements 
 	private static final long serialVersionUID = 1L;
 	
 	private Product product;
+	private ProductAttribute productAttribute;
+	private List <Product> products;
 
 	@PostConstruct
 	public void onInit() {
 		try {
 			
 			super.onInit();
+			
+			setProduct(new Product());
+			getProduct().setPrice(new ProductLoadPrices());
+			getProduct().setStock(new ProductLoadStock());
+			getProduct().setDimensions(new Dimensions());
+			getProduct().setAttributes(new ArrayList <ProductAttribute> ());
+			setProductAttribute(new ProductAttribute());
+			setProducts(new ArrayList<Product>());;
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -188,6 +199,32 @@ public class CadastrarAnuncioController extends OnsysCnovaController implements 
 		}	
 	
 	}
+	
+	public void adicionarProduto() throws Exception {
+		try {	
+			
+			getProducts().add((Product) ObjetoUtil.copiarAtributosObjetoParaNovaInstancia(getProduct()));
+			
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public void adicionarAtributosProduto() throws Exception {
+		try {			
+			
+			getProduct().getAttributes().
+				add((ProductAttribute) ObjetoUtil.copiarAtributosObjetoParaNovaInstancia(getProductAttribute()));
+			
+			setProductAttribute(new ProductAttribute());
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	public void removerAtributosProduto(ProductAttribute productAttribute) throws Exception {
+		getProduct().getAttributes().remove(productAttribute);
+	}
 
 	public Product getProduct() {
 		return product;
@@ -195,6 +232,22 @@ public class CadastrarAnuncioController extends OnsysCnovaController implements 
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
+
+	public ProductAttribute getProductAttribute() {
+		return productAttribute;
+	}
+
+	public void setProductAttribute(ProductAttribute productAttribute) {
+		this.productAttribute = productAttribute;
 	}
 	
 	

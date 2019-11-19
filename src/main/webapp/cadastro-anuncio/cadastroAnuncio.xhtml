@@ -10,17 +10,146 @@
     
 
 	<ui:define name="content">		
-		<p:panel header=".:: Cadastrar Anúncio ::.">
-			<h:form prependId="false">	
-				<p:growl showDetail="true"/>
+		<p:panel header=".:: Cadastrar Produto ::.">
+			<h:form  prependId="false">	
+				<p:growl id="idGrowlFormCadastro" showDetail="true"/>
 				<div class="ui-fluid">
-	       			 <p:panelGrid columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
+	       			 <p:panelGrid id="idPanelGridFormCadastro1" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
 						
+						
+					    <p:outputLabel for="skuSellerId" value="SKU ID do produto do Lojista " />
+		        		<p:inputText id="skuSellerId" required="true" requiredMessage="Informe o SKU ID do produto do Lojista"
+		        						 value="#{cadastrarAnuncioController.product.skuSellerId}" />	
+		        						 
+		        	    <p:outputLabel for="productSellerId" value="ID do produto do lojista para fazer o agrupamento de SKUs " />
+		        		<p:inputText id="productSellerId" required="true" requiredMessage="Informe o ID do produto do lojista para fazer o agrupamento de SKUs"
+		        						 value="#{cadastrarAnuncioController.product.productSellerId}" />				 
+		        		
+						 <p:outputLabel for="title" value="Nome no Marketplace" />
+		        		 <p:inputText id="title" required="true" requiredMessage="Informe o Nome no Marketplace"
+		        						 value="#{cadastrarAnuncioController.product.title}" />	
+		        						 	
+		        	</p:panelGrid>	
+		        	
+		        	<p:separator />
+		        					 		 
+		        	<p:panelGrid id="idPanelGridFormCadastro2" columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
 		        			
+		        		 <p:outputLabel for="description" value="Descrição do Produto" />		        		  
+		        		 <p:textEditor id="description" 
+		        		 			   required="true" style="width: 100%;" height="100"
+		        		 			   requiredMessage="Informe a Descrição do Produto" 
+		        		 			   value="#{cadastrarAnuncioController.product.description}" 
+		        		 			  />
+		        	</p:panelGrid>	
+		        	
+		        	<p:separator />
+		        	
+		            <p:panelGrid id="idPanelGridFormCadastro3" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
+		        	
+		        		 <p:outputLabel for="marca" value="Marca" />
+		        		 <p:inputText id="marca" required="true" requiredMessage="Informe a Marca"
+		        						 value="#{cadastrarAnuncioController.product.brand}" />		
+		        			
+		        		 <p:outputLabel for="precoDefault" value="Preço do produto no Marketplace" />					        
+					     <p:inputNumber id="precoDefault" value="#{cadastrarAnuncioController.product.price.default}" required="true" requiredMessage="Informe o Preço do produto no Marketplace">  
+                    			<p:ajax update="precoDefault" global="false"/>  
+                		 </p:inputNumber> 	
+		        				        	
+                		 
+                		 <p:outputLabel for="precoOffer" value="Preço real de venda" />					        
+					     <p:inputNumber id="precoOffer" value="#{cadastrarAnuncioController.product.price.offer}" required="true" requiredMessage="Preço real de venda">  
+                    			<p:ajax update="precoOffer" global="false"/>  
+                		 </p:inputNumber> 
+                		 
+                		  <h:outputLabel for="qtdeProdutosDisponiveis" value="Quantidade de produtos disponíveis " />
+        				  <p:spinner id="qtdeProdutosDisponiveis" value="#{cadastrarAnuncioController.product.stock.quantity}" min="1"/>
+                		 
+                		  <h:outputLabel for="tempoProdutosEmdias" value=" Tempo de preparação/fabricação do produto em dias. " />
+        				  <p:spinner id="tempoProdutosEmdias" value="#{cadastrarAnuncioController.product.stock.crossDockingTime}" min="1"/>
+                		
+                		
+                		  <h:outputLabel for="weight" value="Peso do produto, em quilos" />
+        				  <p:spinner id="weight" value="#{cadastrarAnuncioController.product.dimensions.weight}" min="1" max="99"/>
+                		
+                		  <h:outputLabel for="length" value="Comprimento do produto, em metros" />
+        				  <p:spinner id="length" value="#{cadastrarAnuncioController.product.dimensions.length}" min="1" max="99"/>
+                		 
+                		  <h:outputLabel for="width" value="Largura do produto, em metros" />
+        				  <p:spinner id="width" value="#{cadastrarAnuncioController.product.dimensions.width}" min="1" max="99"/>
+                		 
+                		  <h:outputLabel for="height" value="Altura do produto, em metros " />
+        				  <p:spinner id="height" value="#{cadastrarAnuncioController.product.dimensions.height}" min="1" max="99"/>
+                	</p:panelGrid>	
+                	
+                	<p:separator />
+                	
+                	<p:panelGrid id="idPanelGridAtributosProduto" columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
+                	
+                		 <p:panel header="Atributos do Produto">
+                			 <p:outputLabel for="productAttributeName" value="Nome" />
+		        		 	 <p:inputText id="productAttributeName" required="true" requiredMessage="Informe o nome"
+		        						 value="#{cadastrarAnuncioController.productAttribute.name}" />	
+		        	
+		        			
+		        			<p:outputLabel for="productAttributeValue" value="Valor" />
+		        		 	<p:inputText id="productAttributeValue" required="true" requiredMessage="Informe o valor"
+		        						 value="#{cadastrarAnuncioController.productAttribute.value}" />	
+		        	
+		        						 
+       						 <p:commandButton value="Adicionar Atributo" 
+       						 			      update="@form" 
+       						 			      process="idPanelGridAtributosProduto"
+       						 			      action="#{cadastrarAnuncioController.adicionarAtributosProduto}" />
+       						 
+		        						 
+		        			<p:dataTable id="idDataTableAtributosProduto" var="productAttribute" value="#{cadastrarAnuncioController.product.attributes}" reflow="true">
+		        				<p:column headerText="Valor">
+		        					<h:outputText value="#{productAttribute.value}" />
+		        				</p:column>
+		        				
+		        				<p:column headerText="Nome">
+		        					<h:outputText value="#{productAttribute.name}" />
+		        				</p:column>
+		        				
+		        				<p:column>
+		        					<p:commandButton value="Remover" 
+		        								    update="@form" 
+		        								    process="idDataTableAtributosProduto" 
+		        								    action="#{cadastrarAnuncioController.removerAtributosProduto(productAttribute)}" />	        						        				
+		        				</p:column>
+		        				
+		        			</p:dataTable>			 
+                		
+                		</p:panel>
+		        	</p:panelGrid>	
+		        	
+		        	<p:separator />
+		        	
+		        	<p:panelGrid id="idPanelGridAdicionarProduto" rendered="#{not empty cadastrarAnuncioController.product.attributes}" columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">	
+		        	
+		        	
+		        		<p:commandButton value="Adicionar Produto" 
+       						 			      update="idPanelGridAdicionarProduto,idPanelGridBotoesCadastrarAnuncio,idGrowlFormCadastro,idPanelGridFormCadastro1,idPanelGridFormCadastro2,idPanelGridFormCadastro3" 
+       						 			      process="idPanelGridAdicionarProduto,idPanelGridFormCadastro1,idPanelGridFormCadastro2,idPanelGridFormCadastro3"
+       						 			      action="#{cadastrarAnuncioController.adicionarProduto}" />
+		        	
+		        		<p:dataTable id="idDataTableProduto" var="product" value="#{cadastrarAnuncioController.products}" reflow="true">
+		        				<p:column headerText="SKU ID do produto do Lojista">
+		        					<h:outputText value="#{product.skuSellerId}" />
+		        				</p:column>
+		        				
+		        				<p:column headerText="ID do produto do lojista para fazer o agrupamento de SKUs">
+		        					<h:outputText value="#{product.productSellerId}" />
+		        				</p:column>
+		        			
+		        		</p:dataTable>
+		        	
 		        	</p:panelGrid>
+		        	
 		        </div>
-		        <p:panelGrid columns="2" >
-		        	<p:commandButton  value="Publicar Produto" action="#{cadastrarAnuncioController.cadastrarAnuncio}" update="@form"/>
+		        <p:panelGrid id="idPanelGridBotoesCadastrarAnuncio" columns="2" rendered="#{not empty cadastrarAnuncioController.products}">
+		        	<p:commandButton value="Publicar Produto(s)" action="#{cadastrarAnuncioController.cadastrarAnuncio}" update="@form"/>
 		        	<p:commandButton value="Limpar" action="#{cadastrarAnuncioController.onInit}" update="@form" immediate="true"/>
 		        </p:panelGrid>
 		        

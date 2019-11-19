@@ -1,6 +1,7 @@
 package br.com.onsys.model;
 
 
+import java.io.Serializable;
 import java.util.*;
 
 import io.swagger.annotations.*;
@@ -8,23 +9,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @ApiModel(description = "")
-public class Product  {
-  
+public class Product implements Serializable {
+ 
+  private static final long serialVersionUID = 1L;
+	
   private String skuId = null;
   private String skuSellerId = null;
   private String productSellerId = null;
   private String title = null;
   private String description = null;
   private String brand = null;
-  private List<String> gtin = new ArrayList<String>() ;
-  private List<String> categories = new ArrayList<String>() ;
-  private List<String> images = new ArrayList<String>() ;
-  private List<String> videos = new ArrayList<String>() ;
+  private List<String> gtin ;
+  private List<String> categories ;
+  private List<String> images  ;
+  private List<String> videos ;
   private ProductLoadPrices price = null;
   private ProductLoadStock stock = null;
   private Dimensions dimensions = null;
   private GiftWrap giftWrap = null;
-  private List<ProductAttribute> attributes = new ArrayList<ProductAttribute>() ;
+  private List<ProductAttribute> attributes;
 
   
   /**
