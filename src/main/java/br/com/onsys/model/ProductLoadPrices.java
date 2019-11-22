@@ -2,12 +2,18 @@ package br.com.onsys.model;
 
 
 import io.swagger.annotations.*;
+
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @ApiModel(description = "")
-public class ProductLoadPrices  {
+public class ProductLoadPrices implements Serializable {
   
+ 
+  private static final long serialVersionUID = 1L;
+ 
   private Double _default = null;
   private Double offer = null;
 

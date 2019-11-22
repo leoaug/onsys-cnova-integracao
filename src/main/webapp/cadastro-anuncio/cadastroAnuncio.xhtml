@@ -21,19 +21,28 @@
 		        		<p:inputText id="skuSellerId" required="true" requiredMessage="Informe o SKU ID do produto do Lojista"
 		        						 value="#{cadastrarAnuncioController.product.skuSellerId}" />	
 		        						 
-		        	    <p:outputLabel for="productSellerId" value="ID do produto do lojista para fazer o agrupamento de SKUs " />
+		        	    <p:outputLabel for="productSellerId" value="ID do produto do lojista agrupamento de SKUs " />
 		        		<p:inputText id="productSellerId" required="true" requiredMessage="Informe o ID do produto do lojista para fazer o agrupamento de SKUs"
 		        						 value="#{cadastrarAnuncioController.product.productSellerId}" />				 
 		        		
 						 <p:outputLabel for="title" value="Nome no Marketplace" />
 		        		 <p:inputText id="title" required="true" requiredMessage="Informe o Nome no Marketplace"
 		        						 value="#{cadastrarAnuncioController.product.title}" />	
-		        						 	
 		        	</p:panelGrid>	
+		        	<p:panelGrid id="idPanelGridFormCadastro2" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
+		        			
+		        		 <p:outputLabel for="categorias" value="Categorias:" />        		 
+		        		 <p:pickList id="categorias" value="#{cadastrarAnuncioController.categoriesPickList}" var="categoria" itemLabel="#{categoria}" itemValue="#{categoria}" required="true" requiredMessage="Informe a Categoria" />
+					     	
+					     <p:outputLabel for="gtin" value="Código EAN:" />        		 
+		        		 <p:pickList id="gtin" value="#{cadastrarAnuncioController.gtinPickList}" var="gtin" itemLabel="#{gtin}" itemValue="#{gtin}" required="true" requiredMessage="Informe o Código EAN do produto" />	
+					    	
+		        	</p:panelGrid>					 	
+		        	
 		        	
 		        	<p:separator />
 		        					 		 
-		        	<p:panelGrid id="idPanelGridFormCadastro2" columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
+		        	<p:panelGrid id="idPanelGridFormCadastro3" columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
 		        			
 		        		 <p:outputLabel for="description" value="Descrição do Produto" />		        		  
 		        		 <p:textEditor id="description" 
@@ -45,7 +54,7 @@
 		        	
 		        	<p:separator />
 		        	
-		            <p:panelGrid id="idPanelGridFormCadastro3" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
+		            <p:panelGrid id="idPanelGridFormCadastro4" columns="4" columnClasses="ui-g-12 ui-md-2,ui-g-12 ui-md-4,ui-g-12 ui-md-2,ui-g-12 ui-md-4" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">		
 		        	
 		        		 <p:outputLabel for="marca" value="Marca" />
 		        		 <p:inputText id="marca" required="true" requiredMessage="Informe a Marca"
@@ -96,8 +105,8 @@
 		        		 	<p:inputText id="productAttributeValue" required="true" requiredMessage="Informe o valor"
 		        						 value="#{cadastrarAnuncioController.productAttribute.value}" />	
 		        	
-		        						 
-       						 <p:commandButton value="Adicionar Atributo" 
+		        			 
+       						 <p:commandButton value="Adicionar Atributo" icon="fa fa-plus-circle" style="width: 32%"
        						 			      update="@form" 
        						 			      process="idPanelGridAtributosProduto"
        						 			      action="#{cadastrarAnuncioController.adicionarAtributosProduto}" />
@@ -126,12 +135,12 @@
 		        	
 		        	<p:separator />
 		        	
-		        	<p:panelGrid id="idPanelGridAdicionarProduto" rendered="#{not empty cadastrarAnuncioController.product.attributes}" columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">	
+		        	<p:panelGrid id="idPanelGridAdicionarProduto" rendered="#{cadastrarAnuncioController.mostrarAdicionarProduct}" columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid">	
 		        	
 		        	
-		        		<p:commandButton value="Adicionar Produto" 
-       						 			      update="idPanelGridAdicionarProduto,idPanelGridBotoesCadastrarAnuncio,idGrowlFormCadastro,idPanelGridFormCadastro1,idPanelGridFormCadastro2,idPanelGridFormCadastro3" 
-       						 			      process="idPanelGridAdicionarProduto,idPanelGridFormCadastro1,idPanelGridFormCadastro2,idPanelGridFormCadastro3"
+		        		<p:commandButton value="Adicionar Produto" icon="fa fa-plus-circle" style="width: 32%"
+       						 			      update="@form" 
+       						 			      process="idPanelGridAdicionarProduto,idPanelGridFormCadastro1,idPanelGridFormCadastro2,idPanelGridFormCadastro3,idPanelGridFormCadastro4"
        						 			      action="#{cadastrarAnuncioController.adicionarProduto}" />
 		        	
 		        		<p:dataTable id="idDataTableProduto" var="product" value="#{cadastrarAnuncioController.products}" reflow="true">
@@ -142,14 +151,21 @@
 		        				<p:column headerText="ID do produto do lojista para fazer o agrupamento de SKUs">
 		        					<h:outputText value="#{product.productSellerId}" />
 		        				</p:column>
+		        				
+		        				<p:column>
+		        					<p:commandButton value="Remover" 
+		        								    update="@form" 
+		        								    process="idDataTableProduto" 
+		        								    action="#{cadastrarAnuncioController.removerProduto(product)}" />	        						        				
+		        				</p:column>
 		        			
 		        		</p:dataTable>
 		        	
 		        	</p:panelGrid>
 		        	
 		        </div>
-		        <p:panelGrid id="idPanelGridBotoesCadastrarAnuncio" columns="2" rendered="#{not empty cadastrarAnuncioController.products}">
-		        	<p:commandButton value="Publicar Produto(s)" action="#{cadastrarAnuncioController.cadastrarAnuncio}" update="@form"/>
+		        <p:panelGrid id="idPanelGridBotoesCadastrarAnuncio" columns="2" rendered="#{not empty cadastrarAnuncioController.products}" styleClass="ui-panelgrid-blank ui-fluid">
+		        	<p:commandButton value="Publicar Produto(s)" action="#{cadastrarAnuncioController.cadastrarAnuncio}" update="@form" process="idPanelGridBotoesCadastrarAnuncio"/>
 		        	<p:commandButton value="Limpar" action="#{cadastrarAnuncioController.onInit}" update="@form" immediate="true"/>
 		        </p:panelGrid>
 		        

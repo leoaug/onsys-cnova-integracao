@@ -3,11 +3,17 @@ package br.com.onsys.model;
 
 
 import io.swagger.annotations.*;
+
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @ApiModel(description = "")
-public class GiftWrap  {
+public class GiftWrap  implements Serializable {
+  
+  
+  private static final long serialVersionUID = 1L;
   
   private Boolean available = null;
   private Double value = null;

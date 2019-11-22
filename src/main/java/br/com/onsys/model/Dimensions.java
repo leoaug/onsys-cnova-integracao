@@ -3,11 +3,17 @@ package br.com.onsys.model;
 
 
 import io.swagger.annotations.*;
+
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @ApiModel(description = "")
-public class Dimensions  {
+public class Dimensions implements Serializable {
+  
+ 
+  private static final long serialVersionUID = 1L;
   
   private Double weight = null;
   private Double length = null;
